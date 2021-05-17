@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/lblIntroduct"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16sp"
+        android:ems="10"
+
+        android:inputType="textMultiLine"
+        android:text="Nhà thờ Đức Bà là cách gọi gắn gọn của Nhà thờ chính tòa Đức Bà Sài Gòn và có tên chính thức là Vương cung thánh đường chính tòa Đức Mẹ Vô nhiễm Nguyên tội. Kiến trúc của nhà thờ được xây dựng theo đồ án của kiến trúc sư J.Bourard với phong cách kiến trúc Roman pha trộn với phong cách kiến trúc Gothic, bao gồm có thánh đường, tháp chuông và công viên bên ngoài."
+
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="41dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

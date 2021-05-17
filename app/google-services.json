@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "298602163732",
+    "firebase_url": "https://fir-9bb53-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-9bb53",
+    "storage_bucket": "fir-9bb53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298602163732:android:dc0493db1b1c3b34af0101",
+        "android_client_info": {
+          "package_name": "com.example.sherwoodsuitesaigon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298602163732-iskhevgnessominte8ses6877kvjvehb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8X0STY67MoPm5yPcrNnQ_jaYJXwU6c2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298602163732-iskhevgnessominte8ses6877kvjvehb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

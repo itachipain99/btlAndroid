@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@drawable/backgroundlogin"
+    tools:context=".Controller.MainActivity">
+
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="186dp"
+        android:layout_height="99dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"
+        android:background="@drawable/logo"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgLogo"
+        android:layout_marginTop="50dp">
+
+        <EditText
+            android:id="@+id/tfUserName"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:padding="16dp"
+            android:background="@drawable/custom_edittext_signin"
+            android:inputType="textPersonName"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:hint="UserName" />
+
+        <EditText
+            android:id="@+id/tfPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/tfUserName"
+            android:layout_marginTop="24dp"
+            android:padding="16dp"
+            android:background="@drawable/custom_edittext_signin"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/tfPassword"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/custom_button_signin"
+            android:backgroundTint="#E8B951"
+            android:text="Sign In"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/btnSignIn"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#00E8B951"
+            android:text="Sign Up"
+            android:textColor="@color/purple_700"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
