@@ -1,23 +1,18 @@
 package com.example.sherwoodsuitesaigon.Controller;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.media.tv.TvContract;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,8 +21,7 @@ import com.example.sherwoodsuitesaigon.Fragment.DetailVuiChoiFragment;
 import com.example.sherwoodsuitesaigon.Fragment.ImageDetailVuiChoiFragment;
 import com.example.sherwoodsuitesaigon.Fragment.IntroductionVuiChoiFragment;
 import com.example.sherwoodsuitesaigon.Model.Detail;
-import com.example.sherwoodsuitesaigon.Network.EatPlaceNetwork;
-import com.example.sherwoodsuitesaigon.Network.HaveFunNetwork;
+import com.example.sherwoodsuitesaigon.Network.VuiChoiNetwork;
 import com.example.sherwoodsuitesaigon.R;
 
 import java.io.Serializable;
@@ -40,7 +34,7 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
     ImageView imgMap,btnBack,imgHeader;
     ConstraintLayout constraintLayoutIntroduct;
     View viewIntroduct,viewDetail,viewImage;
-    EatPlaceNetwork haveFunNetwork;
+    VuiChoiNetwork anUongnNetwork;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +49,7 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
 
     private void getDataFromVuiChoi() {
         Intent intent = getIntent();
-        haveFunNetwork = (EatPlaceNetwork) intent.getSerializableExtra("vuichoidata");
+        anUongnNetwork = (VuiChoiNetwork) intent.getSerializableExtra("vuichoidata");
     }
 
 
@@ -75,10 +69,10 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
     }
 
     private void setDataUI() {
-        lblNamePlace.setText(haveFunNetwork.getTitle());
-        lblLocation.setText(haveFunNetwork.getAddress());
+        lblNamePlace.setText(anUongnNetwork.getTitle());
+        lblLocation.setText(anUongnNetwork.getAddress());
         Glide.with(this)
-                .load(haveFunNetwork.getImageUrls().get(0))
+                .load(anUongnNetwork.getImageUrls().get(0))
                 .placeholder(R.mipmap.ic_launcher)
                 .centerCrop()
                 .into(imgHeader);
@@ -86,7 +80,13 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
 
     public void setListeners() {
         btnBack.setOnClickListener(V -> {
-            startActivity(new Intent(VuiChoiDetailActivity.this, AnUongActivity.class));
+            startActivity(new Intent(VuiChoiDetailActivity.this, HomeActivity.class));
+        });
+
+        imgMap.setOnClickListener(v -> {
+            String url = anUongnNetwork.getUrl();
+            Intent mapBrower = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+            startActivity(mapBrower);
         });
     }
 
@@ -107,7 +107,7 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
                 viewDetail.setBackgroundColor(0xFFFFFFFF);
                 viewImage.setBackgroundColor(0xFFFFFFFF);
                 fragment = new IntroductionVuiChoiFragment();
-                bundle.putString("Introduct",haveFunNetwork.getDescription());
+                bundle.putString("Introduct",anUongnNetwork.getDescription());
                 break;
             case R.id.contrainlayoutDetail :
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -119,7 +119,7 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
                 viewImage.setBackgroundColor(0xFFFFFFFF);
                 viewIntroduct.setBackgroundColor(0xFFFFFFFF);
 
-                Detail detail = new Detail(haveFunNetwork.getPrice(),"10h-20h","Khong co");
+                Detail detail = new Detail(anUongnNetwork.getPrice(),"10h-20h","Khong co");
                 bundle.putSerializable("Detail",(Serializable) detail);
 
                 fragment = new DetailVuiChoiFragment();
@@ -133,7 +133,7 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
                 viewImage.setBackgroundColor(0x80125FBA);
                 viewDetail.setBackgroundColor(0xFFFFFFFF);
                 viewIntroduct.setBackgroundColor(0xFFFFFFFF);
-                bundle.putStringArrayList("Image",(ArrayList<String>) haveFunNetwork.getImageUrls());
+                bundle.putStringArrayList("Image",(ArrayList<String>) anUongnNetwork.getImageUrls());
                 fragment = new ImageDetailVuiChoiFragment();
                 break;
         }
@@ -141,9 +141,4 @@ public class VuiChoiDetailActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frameContent,fragment);
         fragmentTransaction.commit();
     }
-
-
-
-
-
 }

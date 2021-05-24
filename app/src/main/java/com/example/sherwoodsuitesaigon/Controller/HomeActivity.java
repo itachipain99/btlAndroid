@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.VoiceInteractor;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +32,10 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -45,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         this.mapping();
         this.getWeatherDetail();
+        this.getTimeNow();
         setListeners();
     }
 
@@ -72,6 +78,13 @@ public class HomeActivity extends AppCompatActivity {
         lblTimeUpdate = findViewById(R.id.lblTimeUpdate);
         imgWeather = findViewById(R.id.imgWeather);
     }
+
+    private void getTimeNow(){
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String currentTime = timeFormat.format(Calendar.getInstance().getTime());
+        lblTimeUpdate.setText("Cập nhật: " +currentTime);
+    }
+
 
     private void getWeatherDetail() {
         String url = "https://api.openweathermap.org/data/2.5/weather?q=hanoi&appid=b1f6b6e5acd4373c85a79cecf0436f8d&fbclid=IwAR1BSbdrLga3wN8Ful_oSRy17SSt-WYy1sWI10qldb4bIUy7IoVnHOZaRfc";
@@ -119,6 +132,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void remindUser(String weatherDescription) {
+        SharedPreferences sharedPreference = this.getSharedPreferences("user", MODE_PRIVATE);
+        String name = sharedPreference.getString("name", "");
         String remind = "";
         String descriptionVN = "";
         switch (weatherDescription) {
@@ -143,7 +158,7 @@ public class HomeActivity extends AppCompatActivity {
                 remind = "Ngày đẹp trời, chúc bạn vui vẻ nhé";
                 break;
         }
-        lblRemindUser.setText(remind);
+        lblRemindUser.setText(remind + " " + name + "!");
         lblStateWeather.setText(descriptionVN);
     }
 

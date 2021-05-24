@@ -7,12 +7,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.bumptech.glide.Glide;
-import com.example.sherwoodsuitesaigon.Fragment.ImageDetailVuiChoiFragment;
-import com.example.sherwoodsuitesaigon.Model.HaveFunPlace;
-import com.example.sherwoodsuitesaigon.Network.HaveFunNetwork;
 import com.example.sherwoodsuitesaigon.R;
 
 public class ImageDetailVuiChoiAdapter extends BaseAdapter {

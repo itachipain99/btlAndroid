@@ -1,30 +1,33 @@
 package com.example.sherwoodsuitesaigon.Network;
 
+import android.location.Location;
+import android.renderscript.Allocation;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @IgnoreExtraProperties
-public class HaveFunNetwork  implements Serializable {
-    private String description;
+public class AnUongNetwork implements Serializable {
+    private String Description;
     private String address;
     private String categoryName;
-    private ArrayList<String> imageUrls;
+    private List<String> imageUrls;
     private Location location;
     private String phone;
     private String price;
     private String url;
+    private String state;
     private String title;
     private Double totalScore;
     private String website;
 
-    public HaveFunNetwork() {
+    public AnUongNetwork() {
     }
 
-    public HaveFunNetwork(String description, String address, String categoryName, ArrayList<String> imageUrls, Location location, String phone, String price, String url, String title, Double totalScore, String website) {
-        this.description = description;
+    public AnUongNetwork(String description, String address, String categoryName, List<String> imageUrls, Location location, String phone, String price, String url, String state, String title, Double totalScore, String website) {
+        this.Description = description;
         this.address = address;
         this.categoryName = categoryName;
         this.imageUrls = imageUrls;
@@ -32,17 +35,18 @@ public class HaveFunNetwork  implements Serializable {
         this.phone = phone;
         this.price = price;
         this.url = url;
+        this.state = state;
         this.title = title;
         this.totalScore = totalScore;
         this.website = website;
     }
 
     public String getDescription() {
-        return description;
+        return Description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.Description = description;
     }
 
     public String getAddress() {
@@ -61,11 +65,11 @@ public class HaveFunNetwork  implements Serializable {
         this.categoryName = categoryName;
     }
 
-    public ArrayList<String> getImageUrls() {
+    public List<String> getImageUrls() {
         return imageUrls;
     }
 
-    public void setImageUrls(ArrayList<String> imageUrls) {
+    public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
 
@@ -124,4 +128,14 @@ public class HaveFunNetwork  implements Serializable {
     public void setWebsite(String website) {
         this.website = website;
     }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 }
+
+

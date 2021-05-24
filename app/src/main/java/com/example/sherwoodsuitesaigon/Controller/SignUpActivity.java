@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -16,7 +17,6 @@ import com.example.sherwoodsuitesaigon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -72,16 +72,20 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         btnSignIn.setOnClickListener(v-> {
-            startActivity(new Intent(SignUpActivity.this,MainActivity.class));
+            startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
         });
     }
 
     private void insertUserToFireBase(User user) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("user",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("user").document().set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
+                    editor.putString("name", user.getName());
+                    editor.commit();
                     startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
                 }
                 else{

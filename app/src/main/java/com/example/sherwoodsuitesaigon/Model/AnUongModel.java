@@ -2,7 +2,7 @@ package com.example.sherwoodsuitesaigon.Model;
 
 import android.media.Image;
 
-public class EatPlace {
+public class AnUongModel {
     private String imageLink;
     private String name;
     private String typeFood;
@@ -10,7 +10,7 @@ public class EatPlace {
     private String opening;
     private String location;
 
-    public EatPlace(String imageLink, String name, String typeFood, String price, String opening, String location) {
+    public AnUongModel(String imageLink, String name, String typeFood, String price, String opening, String location) {
         this.imageLink = imageLink;
         this.name = name;
         this.typeFood = typeFood;

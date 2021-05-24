@@ -10,26 +10,31 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.sherwoodsuitesaigon.Adapter.EatPlaceAdapter;
-import com.example.sherwoodsuitesaigon.Adapter.HaveFunAdapter;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.sherwoodsuitesaigon.Adapter.AnUongAdapter;
+import com.example.sherwoodsuitesaigon.Adapter.VuiChoiAdapter;
 import com.example.sherwoodsuitesaigon.Adapter.SelectAdapter;
-import com.example.sherwoodsuitesaigon.Model.Detail;
-import com.example.sherwoodsuitesaigon.Model.HaveFunPlace;
-import com.example.sherwoodsuitesaigon.Network.EatPlaceNetwork;
-import com.example.sherwoodsuitesaigon.Network.HaveFunNetwork;
+import com.example.sherwoodsuitesaigon.Network.AnUongNetwork;
+import com.example.sherwoodsuitesaigon.Network.VuiChoiNetwork;
 import com.example.sherwoodsuitesaigon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,14 +46,16 @@ public class VuiChoiActivity extends AppCompatActivity {
     ImageView btnBack;
     ListView tbvVuiChoi,tbvDiaDiem,tbvSapXep;
     List<String> list = new ArrayList<>();
-    List<HaveFunNetwork> mList = new ArrayList<>();
-    HaveFunAdapter adapter;
+    List<VuiChoiNetwork> mList = new ArrayList<>();
+    VuiChoiAdapter adapter;
     ConstraintLayout clDiaDiem,clSapXep,clNoiTieng;
     ArrayList<String> listDiaDiem = new ArrayList<>();
     ArrayList<String> listSapXep = new ArrayList<>();
     Boolean stateDiaDiem = false;
     Boolean stateSapXep = false;
     TextView lblDiaDiem,lblSapXep;
+    String diaDiem = "";
+    String sapXep = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +63,7 @@ public class VuiChoiActivity extends AppCompatActivity {
         this.mapping();
         this.setListeners();
         this.setData();
-        getVuiChoi();
+        getVuiChoiByLocation();
     }
 
 
@@ -73,8 +80,8 @@ public class VuiChoiActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        String[] diadiem =  {"Quận 1","Quận 2","Quận 3","Quận 4","Quận 5","Quận 6"};
-        String[] sapXep =  {"1","2","3"};
+        String[] diadiem = {"Quận 1","Quận 2","Quận 3","Quận 4","Quận 5","Quận 6","Thủ Đức","Quận 12"};
+        String[] sapXep = {"Nổi tiếng","Gần bạn"};
         listDiaDiem = new ArrayList<String>(Arrays.asList(diadiem));
         listSapXep = new ArrayList<String>(Arrays.asList(sapXep));
         SelectAdapter adapterDiaDiem = new SelectAdapter(getApplicationContext(), listDiaDiem);
@@ -93,8 +100,8 @@ public class VuiChoiActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(VuiChoiActivity.this,VuiChoiDetailActivity.class);
 
-                HaveFunNetwork haveFunNetwork = mList.get(position);
-                intent.putExtra("vuichoidata", (Serializable) haveFunNetwork);
+                VuiChoiNetwork vuiChoiNetwork = mList.get(position);
+                intent.putExtra("vuichoidata", (Serializable) vuiChoiNetwork);
 
                 startActivity(intent);
             }
@@ -116,6 +123,8 @@ public class VuiChoiActivity extends AppCompatActivity {
                 lblDiaDiem.setText(diaDiem);
                 tbvDiaDiem.setVisibility(View.INVISIBLE);
                 clDiaDiem.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search_selected));
+                diaDiem = listDiaDiem.get(position);
+                getVuiChoi(diaDiem,sapXep);
                 stateDiaDiem = !stateDiaDiem;
             }
         });
@@ -127,6 +136,8 @@ public class VuiChoiActivity extends AppCompatActivity {
                 lblSapXep.setText(kieuMon);
                 tbvSapXep.setVisibility(View.INVISIBLE);
                 clSapXep.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search_selected));
+                sapXep = listSapXep.get(position);
+                getVuiChoi(diaDiem,sapXep);
                 stateSapXep = !stateDiaDiem;
             }
         });
@@ -156,25 +167,118 @@ public class VuiChoiActivity extends AppCompatActivity {
         listView2.setVisibility(View.INVISIBLE);
     }
 
-    private void getVuiChoi(){
+    private void getVuiChoi(String diadiem,String sapxep){
+        mList.removeAll(mList);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("vui_choi").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document : task.getResult()) {
-                        HaveFunNetwork haveFunNetwork = document.toObject(HaveFunNetwork.class);
-                        mList.add(haveFunNetwork);
-                    }
+        if(diadiem == "" && sapxep == "") {
+            db.collection("vui_choi").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            VuiChoiNetwork vuiChoiNetwork = document.toObject(VuiChoiNetwork.class);
+                            mList.add(vuiChoiNetwork);
+                        }
 //                    Log.d("AnUongActivity", mList.toString(), task.getException());
-                    HaveFunAdapter adapter = new HaveFunAdapter(getApplicationContext(),mList);
-                    tbvVuiChoi.setAdapter(adapter);
-                } else {
+                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
+                        tbvVuiChoi.setAdapter(adapter);
+                    } else {
 //                    Log.d("AnUongActivity", "false", task.getException());
+                    }
                 }
+            });
+        }
+        else if (diadiem != "" && sapxep == "") {
+            db.collection("vui_choi").whereEqualTo("state",diadiem).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            VuiChoiNetwork vuiChoiNetwork = document.toObject(VuiChoiNetwork.class);
+                            mList.add(vuiChoiNetwork);
+                        }
+                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
+                        tbvVuiChoi.setAdapter(adapter);
+                    } else {
+                    }
+                }
+            });
+        }
+        else if (diadiem == "" && sapxep != "") {
+            this.getVuiChoiByLocation();
+        }
+        else  {
+            db.collection("vui_choi").whereEqualTo("state",diadiem).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            VuiChoiNetwork vuiChoiNetwork = document.toObject(VuiChoiNetwork.class);
+                            mList.add(vuiChoiNetwork);
+                        }
+//                    Log.d("AnUongActivity", mList.toString(), task.getException());
+                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
+                        tbvVuiChoi.setAdapter(adapter);
+                    } else {
+//                    Log.d("AnUongActivity", "false", task.getException());
+                    }
+                }
+            });
+        }
+    }
+
+    private void getVuiChoiByLocation() {
+        String lon = "106.6267626";
+        String lat = "10.7723097";
+        int sys = 1;
+        String url = "https://nguyenkhanhson.pythonanywhere.com/?" + "long=" + lon + "&lat=" + lat + "&sys=" + sys;
+        JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, url,null,new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray responsed) {
+                try {
+                    for (int i = 0 ; i < responsed.length() ; i++) {
+                        JSONObject response = (JSONObject) responsed.get(i);
+                        VuiChoiNetwork vuiChoiNetwork = new VuiChoiNetwork();
+                        vuiChoiNetwork.setTitle(response.getString("title"));
+                        vuiChoiNetwork.setAddress(response.getString("address"));
+                        vuiChoiNetwork.setCategoryName(response.getString("categoryName"));
+                        ArrayList<String> imageUrls = new ArrayList<String>();
+
+                        JSONArray cast = response.getJSONArray("imageUrls");
+                        for (int j = 0; j < cast.length() ; j++) {
+                            String url = cast.getString(j);
+                            imageUrls.add(url);
+                        }
+                        vuiChoiNetwork.setImageUrls(imageUrls);
+                        vuiChoiNetwork.setPhone(response.getString("phone"));
+//                        vuiChoiNetwork.setState(response.getString("state"));
+                        vuiChoiNetwork.setTotalScore(response.getDouble("totalScore"));
+                        vuiChoiNetwork.setUrl(response.getString("url"));
+//
+                        mList.add(vuiChoiNetwork);
+                    }
+
+                    Log.d("listds" ,mList.toString());
+                    VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
+                    tbvVuiChoi.setAdapter(adapter);
+                }
+                catch (JSONException e ){
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("listd" , error.toString());
             }
         });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(stringRequest);
     }
+
 
 }

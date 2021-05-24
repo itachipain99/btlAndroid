@@ -1,8 +1,6 @@
 package com.example.sherwoodsuitesaigon.Adapter;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,19 +8,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.sherwoodsuitesaigon.Model.HaveFunPlace;
-import com.example.sherwoodsuitesaigon.Network.HaveFunNetwork;
+import com.example.sherwoodsuitesaigon.Network.VuiChoiNetwork;
 import com.example.sherwoodsuitesaigon.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class HaveFunAdapter extends BaseAdapter {
+public class VuiChoiAdapter extends BaseAdapter {
 
     Context context;
-    List<HaveFunNetwork> list;
+    List<VuiChoiNetwork> list;
 
-    public HaveFunAdapter(Context context, List<HaveFunNetwork> list) {
+    public VuiChoiAdapter(Context context, List<VuiChoiNetwork> list) {
         this.context = context;
         this.list = list;
     }
@@ -48,7 +44,7 @@ public class HaveFunAdapter extends BaseAdapter {
         if(convertView == null){
             viewPlace = View.inflate(parent.getContext(), R.layout.item_vuichoi, null);
         } else viewPlace = convertView;
-        HaveFunNetwork hfp = list.get(position);
+        VuiChoiNetwork hfp = list.get(position);
         ImageView imgPlace = viewPlace.findViewById(R.id.imgPlace);
         TextView lblNamePlace = viewPlace.findViewById(R.id.lblNamePlace);
         TextView lblLoction = viewPlace.findViewById(R.id.lblLoction);

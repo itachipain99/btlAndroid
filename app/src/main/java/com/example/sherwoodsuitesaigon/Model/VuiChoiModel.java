@@ -3,14 +3,14 @@ package com.example.sherwoodsuitesaigon.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HaveFunPlace {
+public class VuiChoiModel {
     private String namePlace;
     private String place;
     private String introduct;
     private List<String> imageList;
     private Detail detail;
 
-    public HaveFunPlace(String namePlace, String place, String introduct, List<String> imageList, Detail detail) {
+    public VuiChoiModel(String namePlace, String place, String introduct, List<String> imageList, Detail detail) {
         this.namePlace = namePlace;
         this.place = place;
         this.introduct = introduct;

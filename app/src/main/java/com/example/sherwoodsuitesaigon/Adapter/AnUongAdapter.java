@@ -1,28 +1,24 @@
 package com.example.sherwoodsuitesaigon.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.sherwoodsuitesaigon.Model.EatPlace;
-import com.example.sherwoodsuitesaigon.Model.HaveFunPlace;
-import com.example.sherwoodsuitesaigon.Network.EatPlaceNetwork;
+import com.example.sherwoodsuitesaigon.Network.AnUongNetwork;
 import com.example.sherwoodsuitesaigon.R;
 
 import java.util.List;
 
-public class EatPlaceAdapter extends ArrayAdapter<EatPlaceNetwork> {
+public class AnUongAdapter extends ArrayAdapter<AnUongNetwork> {
 
     Context context;
-    List<EatPlaceNetwork> list;
+    List<AnUongNetwork> list;
 
-    public EatPlaceAdapter(Context context, List<EatPlaceNetwork> object) {
+    public AnUongAdapter(Context context, List<AnUongNetwork> object) {
         super(context,0, object);
         this.list = object;
         //Rxjava
@@ -36,7 +32,7 @@ public class EatPlaceAdapter extends ArrayAdapter<EatPlaceNetwork> {
             eatPlace = View.inflate(parent.getContext(), R.layout.item_anuong, null);
         }else  eatPlace = convertView;
 
-        EatPlaceNetwork ep = list.get(position);
+        AnUongNetwork ep = list.get(position);
         ImageView imgPlace = eatPlace.findViewById(R.id.imgEatPlace);
         TextView lblNamePlace = eatPlace.findViewById(R.id.lblNamePlace);
         TextView lblTypeFood = eatPlace.findViewById(R.id.lbltypeFood);

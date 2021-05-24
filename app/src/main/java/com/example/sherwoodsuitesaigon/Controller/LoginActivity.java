@@ -4,26 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.sherwoodsuitesaigon.Adapter.HaveFunAdapter;
 import com.example.sherwoodsuitesaigon.Model.ErrorAuthentication;
 import com.example.sherwoodsuitesaigon.Model.User;
-import com.example.sherwoodsuitesaigon.Network.HaveFunNetwork;
 import com.example.sherwoodsuitesaigon.R;
-import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText tfUser;
     EditText tfPassword;
@@ -59,28 +55,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnSignUp.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this,SignUpActivity.class));
+            startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
         });
     }
 
     private void checkFireBaseUser(String userName , String password) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("user",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("user").whereEqualTo("user_name",userName).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     if (task.getResult().isEmpty()) {
-                        Toast.makeText(MainActivity.this, errorAuthentication.getErrorLoginFail(),
+                        Toast.makeText(LoginActivity.this, errorAuthentication.getErrorLoginFail(),
                                 Toast.LENGTH_LONG).show();
                     }
                     else {
                         for(QueryDocumentSnapshot document : task.getResult()) {
                             User user = document.toObject(User.class);
                             if (user.getPassword().equals(password)) {
-                                startActivity(new Intent(MainActivity.this,HomeActivity.class));
+                                editor.putString("name", user.getName());
+                                editor.commit();
+                                startActivity(new Intent(LoginActivity.this,HomeActivity.class));
                             }
                             else {
-                                Toast.makeText(MainActivity.this, errorAuthentication.getErrorLoginFail(),
+                                Toast.makeText(LoginActivity.this, errorAuthentication.getErrorLoginFail(),
                                         Toast.LENGTH_LONG).show();
                             }
                         }
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 else {
-                    Toast.makeText(MainActivity.this, errorAuthentication.getErrorConnect(),
+                    Toast.makeText(LoginActivity.this, errorAuthentication.getErrorConnect(),
                             Toast.LENGTH_LONG).show();
                 }
             }
