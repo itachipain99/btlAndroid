@@ -170,7 +170,6 @@ public class VuiChoiActivity extends AppCompatActivity {
     private void getVuiChoi(String diadiem,String sapxep){
         mList.removeAll(mList);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         if(diadiem == "" && sapxep == "") {
             db.collection("vui_choi").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override

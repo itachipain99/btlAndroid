@@ -1,12 +1,10 @@
 package com.example.sherwoodsuitesaigon.Network;
 
-import android.location.Location;
-
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+
 
 @IgnoreExtraProperties
 public class VuiChoiNetwork implements Serializable {
