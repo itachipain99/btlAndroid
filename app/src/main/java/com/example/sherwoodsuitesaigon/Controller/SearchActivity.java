@@ -16,7 +16,9 @@ import android.widget.ListView;
 
 import com.example.sherwoodsuitesaigon.Adapter.AnUongAdapter;
 import com.example.sherwoodsuitesaigon.Adapter.SearchAdapter;
+import com.example.sherwoodsuitesaigon.Adapter.VuiChoiAdapter;
 import com.example.sherwoodsuitesaigon.Network.AnUongNetwork;
+import com.example.sherwoodsuitesaigon.Network.VuiChoiNetwork;
 import com.example.sherwoodsuitesaigon.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +36,7 @@ public class SearchActivity extends AppCompatActivity {
     ListView tbvSearch;
     EditText tfSearch;
     List<String> list = new ArrayList<>();
-    List<AnUongNetwork> mList = new ArrayList<>();
+    List<VuiChoiNetwork> mList = new ArrayList<>();
     SearchAdapter adapter;
 
     @Override
@@ -79,8 +81,8 @@ public class SearchActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(SearchActivity.this,VuiChoiDetailActivity.class);
 
-                AnUongNetwork haveFunNetwork = mList.get(position);
-                intent.putExtra("vuichoidata", (Serializable) haveFunNetwork);
+                VuiChoiNetwork vuichoiNetwork = mList.get(position);
+                intent.putExtra("vuichoidata", (Serializable) vuichoiNetwork);
 
                 startActivity(intent);
             }
@@ -90,16 +92,15 @@ public class SearchActivity extends AppCompatActivity {
     private void setTbvSearch(String text) {
         mList.removeAll(mList);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("An_uong").whereGreaterThan("title",text).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("vui_choi").whereGreaterThan("title",text).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot document : task.getResult()) {
-                        AnUongNetwork anUongNetwork = document.toObject(AnUongNetwork.class);
-                        mList.add(anUongNetwork);
+                        VuiChoiNetwork vuiChoiNetwork = document.toObject(VuiChoiNetwork.class);
+                        mList.add(vuiChoiNetwork);
                     }
-                    Log.d("AnUongActivity", mList.toString(), task.getException());
-                    AnUongAdapter adapter = new AnUongAdapter(getApplicationContext(),mList);
+                    VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
                     tbvSearch.setAdapter(adapter);
                 } else {
                     Log.d("AnUongActivity", "false", task.getException());
