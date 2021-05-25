@@ -8,12 +8,13 @@ import java.util.ArrayList;
 
 @IgnoreExtraProperties
 public class VuiChoiNetwork implements Serializable {
-    private String description;
+    private String Description;
     private String address;
     private String categoryName;
     private ArrayList<String> imageUrls;
     private Location location;
     private String phone;
+    private String state;
     private String price;
     private String url;
     private String title;
@@ -23,13 +24,14 @@ public class VuiChoiNetwork implements Serializable {
     public VuiChoiNetwork() {
     }
 
-    public VuiChoiNetwork(String description, String address, String categoryName, ArrayList<String> imageUrls, Location location, String phone, String price, String url, String title, Double totalScore, String website) {
-        this.description = description;
+    public VuiChoiNetwork(String description, String address, String categoryName, ArrayList<String> imageUrls, Location location, String phone,String state ,String price, String url, String title, Double totalScore, String website) {
+        this.Description = description;
         this.address = address;
         this.categoryName = categoryName;
         this.imageUrls = imageUrls;
         this.location = location;
         this.phone = phone;
+        this.state = state;
         this.price = price;
         this.url = url;
         this.title = title;
@@ -38,11 +40,11 @@ public class VuiChoiNetwork implements Serializable {
     }
 
     public String getDescription() {
-        return description;
+        return Description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.Description = description;
     }
 
     public String getAddress() {
@@ -83,6 +85,14 @@ public class VuiChoiNetwork implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getPrice() {

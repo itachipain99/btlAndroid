@@ -3,9 +3,16 @@ package com.example.sherwoodsuitesaigon.Controller;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,18 +51,22 @@ import java.util.List;
 public class VuiChoiActivity extends AppCompatActivity {
 
     ImageView btnBack;
-    ListView tbvVuiChoi,tbvDiaDiem,tbvSapXep;
+    ListView tbvVuiChoi, tbvDiaDiem, tbvSapXep;
     List<String> list = new ArrayList<>();
     List<VuiChoiNetwork> mList = new ArrayList<>();
     VuiChoiAdapter adapter;
-    ConstraintLayout clDiaDiem,clSapXep,clNoiTieng;
+    ConstraintLayout clDiaDiem, clSapXep, clNoiTieng;
     ArrayList<String> listDiaDiem = new ArrayList<>();
     ArrayList<String> listSapXep = new ArrayList<>();
     Boolean stateDiaDiem = false;
     Boolean stateSapXep = false;
-    TextView lblDiaDiem,lblSapXep;
+    TextView lblDiaDiem, lblSapXep;
     String diaDiem = "";
     String sapXep = "";
+    String lon = "";
+    String lat = "";
+    LocationManager mLocationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +75,24 @@ public class VuiChoiActivity extends AppCompatActivity {
         this.setListeners();
         this.setData();
         getVuiChoiByLocation();
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1,
+                1, mLocationListener);
     }
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+//            lon = location.getLongitude() + "";
+//            lat = location.getLatitude() + "";
+        }
+    };
 
 
-    private void mapping(){
+    private void mapping() {
         this.tbvVuiChoi = findViewById(R.id.tbvVuichoi);
         this.btnBack = findViewById(R.id.btnBack);
         this.tbvDiaDiem = findViewById(R.id.tbvDiaDiem);
@@ -80,8 +105,8 @@ public class VuiChoiActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        String[] diadiem = {"Quận 1","Quận 2","Quận 3","Quận 4","Quận 5","Quận 6","Thủ Đức","Quận 12"};
-        String[] sapXep = {"Nổi tiếng","Gần bạn"};
+        String[] diadiem = {"Quận 1", "Quận 2", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Thủ Đức", "Quận 12"};
+        String[] sapXep = {"Nổi tiếng", "Gần bạn"};
         listDiaDiem = new ArrayList<String>(Arrays.asList(diadiem));
         listSapXep = new ArrayList<String>(Arrays.asList(sapXep));
         SelectAdapter adapterDiaDiem = new SelectAdapter(getApplicationContext(), listDiaDiem);
@@ -92,13 +117,13 @@ public class VuiChoiActivity extends AppCompatActivity {
 
     public void setListeners() {
         btnBack.setOnClickListener(V -> {
-            startActivity(new Intent(VuiChoiActivity.this,HomeActivity.class));
+            startActivity(new Intent(VuiChoiActivity.this, HomeActivity.class));
         });
 
         tbvVuiChoi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(VuiChoiActivity.this,VuiChoiDetailActivity.class);
+                Intent intent = new Intent(VuiChoiActivity.this, VuiChoiDetailActivity.class);
 
                 VuiChoiNetwork vuiChoiNetwork = mList.get(position);
                 intent.putExtra("vuichoidata", (Serializable) vuiChoiNetwork);
@@ -106,13 +131,13 @@ public class VuiChoiActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        clDiaDiem.setOnClickListener(v ->{
-            this.changeColorSelected(tbvDiaDiem,tbvSapXep,clDiaDiem,clSapXep,clNoiTieng,stateDiaDiem);
+        clDiaDiem.setOnClickListener(v -> {
+            this.changeColorSelected(tbvDiaDiem, tbvSapXep, clDiaDiem, clSapXep, clNoiTieng, stateDiaDiem);
             stateDiaDiem = !stateDiaDiem;
         });
 
-        clSapXep.setOnClickListener(v-> {
-            this.changeColorSelected(tbvSapXep,tbvDiaDiem,clSapXep,clDiaDiem,clNoiTieng,stateSapXep);
+        clSapXep.setOnClickListener(v -> {
+            this.changeColorSelected(tbvSapXep, tbvDiaDiem, clSapXep, clDiaDiem, clNoiTieng, stateSapXep);
             stateSapXep = !stateSapXep;
         });
 
@@ -124,7 +149,7 @@ public class VuiChoiActivity extends AppCompatActivity {
                 tbvDiaDiem.setVisibility(View.INVISIBLE);
                 clDiaDiem.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search_selected));
                 diaDiem = listDiaDiem.get(position);
-                getVuiChoi(diaDiem,sapXep);
+                getVuiChoi(diaDiem, sapXep);
                 stateDiaDiem = !stateDiaDiem;
             }
         });
@@ -137,28 +162,27 @@ public class VuiChoiActivity extends AppCompatActivity {
                 tbvSapXep.setVisibility(View.INVISIBLE);
                 clSapXep.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search_selected));
                 sapXep = listSapXep.get(position);
-                getVuiChoi(diaDiem,sapXep);
+                getVuiChoi(diaDiem, sapXep);
                 stateSapXep = !stateDiaDiem;
             }
         });
     }
 
 
-    public void changeColorSelected(ListView listView1,ListView listView2, ConstraintLayout constraintLayout1,ConstraintLayout constraintLayout2,ConstraintLayout constraintLayout3,Boolean state) {
+    public void changeColorSelected(ListView listView1, ListView listView2, ConstraintLayout constraintLayout1, ConstraintLayout constraintLayout2, ConstraintLayout constraintLayout3, Boolean state) {
         constraintLayout2.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search));
         constraintLayout3.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search));
         final int sdk = android.os.Build.VERSION.SDK_INT;
-        if(state) {
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                constraintLayout1.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search_selected) );
+        if (state) {
+            if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                constraintLayout1.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search_selected));
             } else {
                 constraintLayout1.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search_selected));
             }
             listView1.setVisibility(View.INVISIBLE);
-        }
-        else {
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                constraintLayout1.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search) );
+        } else {
+            if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                constraintLayout1.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search));
             } else {
                 constraintLayout1.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.custom_constrain_search));
             }
@@ -167,58 +191,55 @@ public class VuiChoiActivity extends AppCompatActivity {
         listView2.setVisibility(View.INVISIBLE);
     }
 
-    private void getVuiChoi(String diadiem,String sapxep){
+    private void getVuiChoi(String diadiem, String sapxep) {
         mList.removeAll(mList);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        if(diadiem == "" && sapxep == "") {
+        if (diadiem == "" && sapxep == "") {
             db.collection("vui_choi").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                    if(task.isSuccessful()){
-                        for(QueryDocumentSnapshot document : task.getResult()) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
                             VuiChoiNetwork vuiChoiNetwork = document.toObject(VuiChoiNetwork.class);
                             mList.add(vuiChoiNetwork);
                         }
 //                    Log.d("AnUongActivity", mList.toString(), task.getException());
-                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
+                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(), mList);
                         tbvVuiChoi.setAdapter(adapter);
                     } else {
 //                    Log.d("AnUongActivity", "false", task.getException());
                     }
                 }
             });
-        }
-        else if (diadiem != "" && sapxep == "") {
-            db.collection("vui_choi").whereEqualTo("state",diadiem).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        } else if (diadiem != "" && sapxep == "") {
+            db.collection("vui_choi").whereEqualTo("state", diadiem).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()){
-                        for(QueryDocumentSnapshot document : task.getResult()) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
                             VuiChoiNetwork vuiChoiNetwork = document.toObject(VuiChoiNetwork.class);
                             mList.add(vuiChoiNetwork);
                         }
-                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
+                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(), mList);
                         tbvVuiChoi.setAdapter(adapter);
                     } else {
                     }
                 }
             });
-        }
-        else if (diadiem == "" && sapxep != "") {
+        } else if (diadiem == "" && sapxep != "") {
             this.getVuiChoiByLocation();
-        }
-        else  {
-            db.collection("vui_choi").whereEqualTo("state",diadiem).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        } else {
+            db.collection("vui_choi").whereEqualTo("state", diadiem).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()){
-                        for(QueryDocumentSnapshot document : task.getResult()) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
                             VuiChoiNetwork vuiChoiNetwork = document.toObject(VuiChoiNetwork.class);
                             mList.add(vuiChoiNetwork);
                         }
 //                    Log.d("AnUongActivity", mList.toString(), task.getException());
-                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(),mList);
+                        VuiChoiAdapter adapter = new VuiChoiAdapter(getApplicationContext(), mList);
                         tbvVuiChoi.setAdapter(adapter);
                     } else {
 //                    Log.d("AnUongActivity", "false", task.getException());
@@ -227,11 +248,10 @@ public class VuiChoiActivity extends AppCompatActivity {
             });
         }
     }
-
     private void getVuiChoiByLocation() {
-        String lon = "106.6267626";
-        String lat = "10.7723097";
-        int sys = 1;
+        lon = "106.6267626";
+        lat = "10.7723097";
+        int sys = 0;
         String url = "https://nguyenkhanhson.pythonanywhere.com/?" + "long=" + lon + "&lat=" + lat + "&sys=" + sys;
         JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, url,null,new Response.Listener<JSONArray>() {
             @Override
@@ -252,9 +272,10 @@ public class VuiChoiActivity extends AppCompatActivity {
                         }
                         vuiChoiNetwork.setImageUrls(imageUrls);
                         vuiChoiNetwork.setPhone(response.getString("phone"));
-//                        vuiChoiNetwork.setState(response.getString("state"));
+                        vuiChoiNetwork.setState(response.getString("state"));
                         vuiChoiNetwork.setTotalScore(response.getDouble("totalScore"));
                         vuiChoiNetwork.setUrl(response.getString("url"));
+                        vuiChoiNetwork.setDescription(response.getString("Description"));
 //
                         mList.add(vuiChoiNetwork);
                     }

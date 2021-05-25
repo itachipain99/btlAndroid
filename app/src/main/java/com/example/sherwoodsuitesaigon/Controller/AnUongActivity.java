@@ -3,9 +3,15 @@ package com.example.sherwoodsuitesaigon.Controller;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +67,9 @@ public class AnUongActivity extends AppCompatActivity {
     TextView lblDiaDiem,lblKieuMon;
     String diaDiem = "";
     String kieuMon = "";
+    LocationManager mLocationManager;
+    String lon = "";
+    String lat = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +80,22 @@ public class AnUongActivity extends AppCompatActivity {
         this.setData();
         this.setListeners();
         this.getAnUongByLocation();
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1,
+                1, mLocationListener);
     }
+
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+//            lon = location.getLongitude() + "";
+//            lat = location.getLatitude() + "";
+        }
+    };
 
     private void mapping(){
         this.btnBack = findViewById(R.id.btnBack);
@@ -249,8 +273,8 @@ public class AnUongActivity extends AppCompatActivity {
     }
 
     private void getAnUongByLocation() {
-        String lon = "106.6267626";
-        String lat = "10.7723097";
+        lon = "106.6267626";
+        lat = "10.7723097";
         int sys = 1;
         String url = "https://nguyenkhanhson.pythonanywhere.com/?" + "long=" + lon + "&lat=" + lat + "&sys=" + sys;
         JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, url,null,new Response.Listener<JSONArray>() {

@@ -92,7 +92,7 @@ public class SearchActivity extends AppCompatActivity {
     private void setTbvSearch(String text) {
         mList.removeAll(mList);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("vui_choi").whereGreaterThan("title",text).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("vui_choi").orderBy("title").startAt(text).endAt(text + "\uf8ff").limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){

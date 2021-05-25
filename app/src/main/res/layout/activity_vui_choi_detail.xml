@@ -9,7 +9,6 @@
         android:id="@+id/relativeHeader"
         android:layout_width="match_parent"
         android:layout_height="218dp">
-
         <ImageView
             android:id="@+id/imgHeader"
             android:layout_width="match_parent"
@@ -19,7 +18,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="80dp"
             android:layout_alignParentBottom="true"
             android:background="#80125FBA"
             android:layout_marginBottom="0dp">
@@ -38,16 +37,18 @@
 
             <TextView
                 android:id="@+id/lblLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_width="337dp"
+                android:layout_height="0dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="4dp"
                 android:text="Công xã Paris, phường Bến Nghé, Quận 1"
-                android:textStyle="normal"
-                android:textSize="14sp"
                 android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/lblNamePlace"
-                app:layout_constraintStart_toStartOf="parent"/>
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toStartOf="@+id/imgMap"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lblNamePlace" />
 
             <ImageView
                 android:id="@+id/imgMap"
