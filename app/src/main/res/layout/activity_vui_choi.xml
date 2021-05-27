@@ -116,7 +116,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginLeft="20dp"
-                    android:text="Nổi tiếng"
+                    android:text=""
                     android:textColor="#25282B"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
